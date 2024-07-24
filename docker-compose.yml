@@ -1,0 +1,38 @@
+services:
+  db:
+    container_name: mariadb
+    image: bitnami/mariadb:11.4.2
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+    ports:
+      - 27017:3306
+    restart: always
+    environment:
+      MARIADB_USER: ${RB_DB_USERNAME}
+      MARIADB_DATABASE: ${RB_DB_NAME}
+      MARIADB_PASSWORD: ${RB_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${RB_DB_PASSWORD}
+      #ALLOW_EMPTY_PASSWORD: yes
+  
+  laravel:
+    depends_on:
+      - db
+    image: bitnami/laravel:11.1.4
+    volumes:
+      - ./laravel:/app
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USERNAME: ${RB_DB_USERNAME}
+      DB_DATABASE: ${RB_DB_NAME}
+      DB_PASSWORD: ${RB_DB_PASSWORD}
+      #LARAVEL_PORT_NUMBER: 5173
+    #command: sh -c "composer install && npm install && php artisan serve --host=0.0.0.0 --port=8000"
+    ports:
+      - 8000:8000
+      - 5173:5173
+    restart: always
+
+volumes:
+  mariadb_data:
+    external: false

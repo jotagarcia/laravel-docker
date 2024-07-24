@@ -1,0 +1,7 @@
+FROM bitnami/laravel:11.1.4
+WORKDIR /app
+
+EXPOSE 8000
+
+EXPOSE 5173
+
